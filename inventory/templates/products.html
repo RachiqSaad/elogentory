@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<!-- Inventory Summary -->
+<div class="card p-3 mb-4">
+    <div class="row text-center">
+        <div class="col">
+            <div class="fw-semibold text-primary">Categories</div>
+            <div>{{total_categories}}</div>
+        </div>
+        <div class="col">
+            <div class="fw-semibold text-warning">Total Products</div>
+            <div>{{total_products}}</div>
+        </div>
+        <div class="col">
+            <div class="fw-semibold text-danger">Low Stocks</div>
+            <div>{{low_stock_count}}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Product Table -->
+<div class="card p-3">
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="d-flex justify-content-between mb-3">
+        <h6>Products</h6>
+        <div>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
+                data-bs-target="#addProductModal">
+                Add Product
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Availability</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.stock }} units</td>
+                    {% if product.stock == 0 %}
+                    <td style="color: Red;" class="status-out">Out of stock</td>
+                    {% elif product.stock <= product.stock_min %} <td style="color: Red;" class="status-low">Low stock
+                        </td>
+
+                        {% else %}
+                        <td class="status-in">In stock</td>
+                        {% endif %}
+                        <td>
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-sm btn-link">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                        </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-muted text-center">No products available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+
+<!-- Product Add Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="productName" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="productName" name="name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="productCategory" class="form-label">Category</label>
+                        <select class="form-select" id="productCategory" name="category" required>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="productSupplier" class="form-label">Supplier</label>
+                        <select class="form-select" id="productSupplier" name="supplier">
+                            <option value="" selected>-- Optional --</option>
+                            {% for supplier in suppliers %}
+                            <option value="{{ supplier.id }}">{{ supplier.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="stockMin" class="form-label">Minimum Stock</label>
+                        <input type="number" class="form-control" id="stockMin" name="stock_min" min="0" value="0">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="stock" class="form-label">Current Stock</label>
+                        <input type="number" class="form-control" id="stock" name="stock" min="0" value="0">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="productImage" class="form-label">Image (optional)</label>
+                        <input type="file" class="form-control" id="productImage" name="image" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

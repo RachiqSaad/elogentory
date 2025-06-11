@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+<!-- Messages -->
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Product Table and Actions -->
+<div class="card p-3">
+    <div class="d-flex justify-content-between mb-3">
+        <h6>Stock in</h6>
+        <div>
+
+            <!-- Add Stock In Button -->
+            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                data-bs-target="#addStockInModal">
+                Add Stock In
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity Added</th>
+                    <th>Date</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stockin in stockins %}
+                <tr>
+                    <td>{{ stockin.product.name }}</td>
+                    <td>{{ stockin.quantity }}</td>
+                    <td>{{ stockin.date }}</td>
+                    <td>{{ stockin.note|default:"-" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-muted text-center">No stock entries available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+<!-- Add Stock In Modal -->
+<div class="modal fade" id="addStockInModal" tabindex="-1" aria-labelledby="addStockInModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST"">
+                {% csrf_token %}
+                <div class=" modal-header">
+                <h5 class="modal-title" id="addStockInModalLabel">Add Stock In</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <div class="mb-3">
+                <label for="stockInProduct" class="form-label">Product</label>
+                <select id="stockInProduct" name="product" class="form-select" required>
+                    <option value="" disabled selected>Select a product</option>
+                    {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+
+            <div class="mb-3">
+                <label for="stockInQuantity" class="form-label">Quantity</label>
+                <input type="number" id="stockInQuantity" name="quantity" min="1" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="stockInNote" class="form-label">Note (optional)</label>
+                <textarea id="stockInNote" name="note" rows="2" class="form-control"></textarea>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Add Stock In</button>
+        </div>
+        </form>
+    </div>
+</div>
+</div>
+
+{% endblock %}

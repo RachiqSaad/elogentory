@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+
+<!-- Product Table -->
+<div class="card p-3">
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} text-center" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="d-flex justify-content-between mb-3">
+        <h6>Categories</h6>
+        <div>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
+                data-bs-target="#addCategoryModal">
+                Add Category
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                <tr>
+                    <td>{{ category.name }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-muted text-center">No category available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="categoryName" name="name" required>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add Category</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

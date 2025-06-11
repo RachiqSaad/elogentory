@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-10 offset-md-1">
+        <div class="card shadow rounded-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Product Details</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered align-middle">
+                    <tbody>
+                        <tr>
+                            <th class="w-25 text-muted">Product Name</th>
+                            <td>{{ product.name }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Product ID</th>
+                            <td>{{ product.id }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Category</th>
+                            <td>{{ product.category.name }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Minimum Stock (Threshold)</th>
+                            <td>{{ product.stock_min }}</td>
+                        </tr>
+                        {% if product.supplier %}
+                        <tr>
+                            <th class="text-muted">Supplier Name</th>
+                            <td>{{ product.supplier.name }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Contact Number</th>
+                            <td>{{ product.supplier.contact }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <th class="text-muted">Supplier</th>
+                            <td class="text-warning">No supplier assigned.</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <th class="text-muted">Product Image</th>
+                            <td>
+                                {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                                    class="img-fluid img-thumbnail mt-2" style="max-width: 300px;">
+                                {% else %}
+                                <span class="text-muted">No image available.</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
